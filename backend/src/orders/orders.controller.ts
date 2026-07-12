@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Request,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
@@ -26,10 +27,10 @@ export class OrdersController {
   }
 
   @Get()
-  @Roles('ADMIN')
-  @ApiOperation({ summary: 'Ambil semua order (ADMIN only)' })
-  findAll() {
-    return this.ordersService.findAll();
+  @Roles('ADMIN', 'STUDENT')
+  @ApiOperation({ summary: 'Ambil semua order (ADMIN / STUDENT)' })
+  findAll(@Request() req: { user: { id: number; email: string; role: string } }) {
+    return this.ordersService.findAll(req.user);
   }
 
   @Get(':id')

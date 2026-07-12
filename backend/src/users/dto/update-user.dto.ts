@@ -12,6 +12,7 @@ import {
 export enum UserRole {
   ADMIN = 'ADMIN',
   CASHIER = 'CASHIER',
+  STUDENT = 'STUDENT',
 }
 
 /**
@@ -50,11 +51,11 @@ export class UpdateUserDto {
 
   @ApiProperty({
     enum: UserRole,
-    example: UserRole.CASHIER,
-    description: 'Role pengguna: ADMIN atau CASHIER (opsional)',
+    example: UserRole.STUDENT,
+    description: 'Role pengguna: ADMIN, CASHIER, atau STUDENT (opsional)',
     required: false,
   })
-  @IsEnum(UserRole, { message: 'Role harus ADMIN atau CASHIER' })
+  @IsEnum(UserRole, { message: 'Role harus ADMIN, CASHIER, atau STUDENT' })
   @IsOptional()
   role?: UserRole;
 }

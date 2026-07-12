@@ -29,6 +29,11 @@ export class AuthService {
       throw new UnauthorizedException('Email atau password salah');
     }
 
+    // Hanya izinkan role ADMIN dan CASHIER masuk ke portal web admin (Kecuali jika request dari aplikasi Android)
+    if (user.role === 'STUDENT' && dto.client !== 'android') {
+      throw new UnauthorizedException('Akun Siswa tidak diperbolehkan mengakses portal admin web');
+    }
+
     // Perbarui waktu login terakhir di database
     await this.db.user.update({
       where: { id: user.id },

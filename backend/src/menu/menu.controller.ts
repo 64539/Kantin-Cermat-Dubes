@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
@@ -30,8 +31,12 @@ export class MenuController {
   @Public()
   @Get()
   @ApiOperation({ summary: 'Ambil semua menu (publik)' })
-  findAll() {
-    return this.menuService.findAll();
+  findAll(
+    @Query('search') search?: string,
+    @Query('categoryId') categoryId?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.menuService.findAll(search, categoryId, status);
   }
 
   @Public()

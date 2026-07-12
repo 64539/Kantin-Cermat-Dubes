@@ -11,7 +11,7 @@ import XLSX from "xlsx-js-style"
 interface OrderItem {
   id: number
   quantity: number
-  price: number
+  priceAtPurchase: number
   menu: {
     name: string
     category: {
@@ -107,7 +107,7 @@ export function Reports() {
           salesMap[menuName] = { quantity: 0, revenue: 0, category: categoryName }
         }
         salesMap[menuName].quantity += item.quantity
-        salesMap[menuName].revenue += item.quantity * item.price
+        salesMap[menuName].revenue += item.quantity * item.priceAtPurchase
       })
     })
 
@@ -130,7 +130,7 @@ export function Reports() {
           categoryMap[categoryName] = { quantity: 0, revenue: 0 }
         }
         categoryMap[categoryName].quantity += item.quantity
-        categoryMap[categoryName].revenue += item.quantity * item.price
+        categoryMap[categoryName].revenue += item.quantity * item.priceAtPurchase
       })
     })
 

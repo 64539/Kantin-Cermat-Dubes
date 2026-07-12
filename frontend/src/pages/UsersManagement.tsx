@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Users, Shield, User, Plus, Search, Edit, Trash, Loader2, RefreshCw } from "lucide-react"
+import { Users, Shield, User, Plus, Search, Edit, Trash, Loader2, RefreshCw, GraduationCap } from "lucide-react"
 import { api } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 
@@ -13,7 +13,7 @@ interface UserItem {
   id: number
   name: string
   email: string
-  role: "ADMIN" | "CASHIER"
+  role: "ADMIN" | "CASHIER" | "STUDENT"
   lastLogin: string | null
   createdAt: string
   updatedAt: string
@@ -171,6 +171,7 @@ export function UsersManagement() {
   const totalUsers = users.length
   const adminCount = users.filter((u) => u.role === "ADMIN").length
   const cashierCount = users.filter((u) => u.role === "CASHIER").length
+  const studentCount = users.filter((u) => u.role === "STUDENT").length
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString("id-ID", {
@@ -247,7 +248,7 @@ export function UsersManagement() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-3">
+      <div className="grid gap-4 md:grid-cols-4">
         <Card className="border border-border bg-card shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-semibold text-text-secondary">Total Pengguna</CardTitle>
@@ -284,6 +285,19 @@ export function UsersManagement() {
               <div className="h-8 w-12 bg-slate-100 animate-pulse rounded" />
             ) : (
               <div className="text-3xl font-bold text-emerald-600">{cashierCount}</div>
+            )}
+          </CardContent>
+        </Card>
+        <Card className="border border-border bg-card shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-semibold text-text-secondary">Siswa (STUDENT)</CardTitle>
+            <GraduationCap className="h-4 w-4 text-blue-600" />
+          </CardHeader>
+          <CardContent>
+            {loading ? (
+              <div className="h-8 w-12 bg-slate-100 animate-pulse rounded" />
+            ) : (
+              <div className="text-3xl font-bold text-blue-600">{studentCount}</div>
             )}
           </CardContent>
         </Card>
@@ -333,15 +347,22 @@ export function UsersManagement() {
                       <TableCell className="font-semibold text-text-primary">{u.name}</TableCell>
                       <TableCell className="text-text-primary">{u.email}</TableCell>
                       <TableCell>
-                        {u.role === "ADMIN" ? (
+                        {u.role === "ADMIN" && (
                           <Badge variant="outline" className="text-indigo-600 border-indigo-600 bg-indigo-50 font-bold gap-1">
                             <Shield className="h-3 w-3" />
                             Admin
                           </Badge>
-                        ) : (
+                        )}
+                        {u.role === "CASHIER" && (
                           <Badge variant="outline" className="text-emerald-600 border-emerald-600 bg-emerald-50 font-semibold gap-1">
                             <User className="h-3 w-3" />
                             Kasir
+                          </Badge>
+                        )}
+                        {u.role === "STUDENT" && (
+                          <Badge variant="outline" className="text-blue-600 border-blue-600 bg-blue-50 font-semibold gap-1">
+                            <GraduationCap className="h-3 w-3" />
+                            Siswa
                           </Badge>
                         )}
                       </TableCell>
@@ -425,6 +446,7 @@ export function UsersManagement() {
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                 >
+                  <option value="STUDENT">SISWA (Aplikasi Android Siswa)</option>
                   <option value="CASHIER">KASIR (Stok &amp; Kasir)</option>
                   <option value="ADMIN">ADMIN (Semua Kontrol &amp; Pengaturan)</option>
                 </select>
@@ -492,6 +514,7 @@ export function UsersManagement() {
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
                 >
+                  <option value="STUDENT">SISWA (Aplikasi Android Siswa)</option>
                   <option value="CASHIER">KASIR (Stok &amp; Kasir)</option>
                   <option value="ADMIN">ADMIN (Semua Kontrol &amp; Pengaturan)</option>
                 </select>

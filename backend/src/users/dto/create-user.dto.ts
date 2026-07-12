@@ -12,6 +12,7 @@ import {
 enum UserRoleCreate {
   ADMIN = 'ADMIN',
   CASHIER = 'CASHIER',
+  STUDENT = 'STUDENT',
 }
 
 export class CreateUserDto {
@@ -38,12 +39,15 @@ export class CreateUserDto {
 
   @ApiProperty({
     enum: UserRoleCreate,
-    default: UserRoleCreate.CASHIER,
-    example: UserRoleCreate.CASHIER,
-    description: 'Role pengguna: ADMIN atau CASHIER (default CASHIER)',
+    default: UserRoleCreate.STUDENT,
+    example: UserRoleCreate.STUDENT,
+    description:
+      'Role pengguna: ADMIN, CASHIER, atau STUDENT (default STUDENT)',
     required: false,
   })
-  @IsEnum(UserRoleCreate, { message: 'Role harus ADMIN atau CASHIER' })
+  @IsEnum(UserRoleCreate, {
+    message: 'Role harus ADMIN, CASHIER, atau STUDENT',
+  })
   @IsOptional()
-  role?: string = UserRoleCreate.CASHIER;
+  role?: string = UserRoleCreate.STUDENT;
 }

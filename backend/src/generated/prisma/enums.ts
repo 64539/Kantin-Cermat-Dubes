@@ -11,7 +11,8 @@
 
 export const Role = {
   ADMIN: 'ADMIN',
-  CASHIER: 'CASHIER'
+  CASHIER: 'CASHIER',
+  STUDENT: 'STUDENT'
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]
@@ -26,3 +27,29 @@ export const OrderStatus = {
 } as const
 
 export type OrderStatus = (typeof OrderStatus)[keyof typeof OrderStatus]
+
+
+export const StockType = {
+  IN: 'IN',
+  OUT: 'OUT',
+  ADJUSTMENT: 'ADJUSTMENT'
+} as const
+
+export type StockType = (typeof StockType)[keyof typeof StockType]
+
+
+export const PaymentMethod = {
+  CASH: 'CASH',
+  QRIS: 'QRIS'
+} as const
+
+export type PaymentMethod = (typeof PaymentMethod)[keyof typeof PaymentMethod]
+
+
+export const PaymentStatus = {
+  UNPAID: 'UNPAID',
+  PAID: 'PAID',
+  REFUNDED: 'REFUNDED'
+} as const
+
+export type PaymentStatus = (typeof PaymentStatus)[keyof typeof PaymentStatus]

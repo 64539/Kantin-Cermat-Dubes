@@ -11,6 +11,7 @@ datasource db {
 enum Role {
   ADMIN
   CASHIER
+  STUDENT // Tambahan: Wajib ada untuk aktor Aplikasi Android Siswa
 }
 
 enum OrderStatus {
@@ -21,15 +22,36 @@ enum OrderStatus {
   CANCELLED
 }
 
+enum StockType {
+  IN
+  OUT
+  ADJUSTMENT
+}
+
+enum PaymentMethod {
+  CASH
+  QRIS
+}
+
+enum PaymentStatus {
+  UNPAID
+  PAID
+  REFUNDED
+}
+
 model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role     @default(CASHIER)
-  lastLogin DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             Int            @id @default(autoincrement())
+  email          String         @unique
+  password       String
+  name           String
+  role           Role           @default(STUDENT)
+  isActive       Boolean        @default(true)
+  lastLogin      DateTime?
+  orders         Order[]        @relation("StudentOrders") // Relasi ke pesanan jika dia Siswa
+  transactions   Transaction[]  // Relasi ke transaksi jika dia Cashier
+  stockHistories StockHistory[] // Riwayat perubahan stok yang dilakukan user ini
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
 }
 
 model Category {
@@ -41,35 +63,64 @@ model Category {
 }
 
 model Menu {
-  id          Int         @id @default(autoincrement())
-  name        String
-  price       Int
-  stock       Int         @default(0)
-  imageUrl    String?
-  status      Boolean     @default(true)
-  categoryId  Int
-  category    Category    @relation(fields: [categoryId], references: [id])
-  orderItems  OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id             Int            @id @default(autoincrement())
+  name           String
+  price          Int
+  stock          Int            @default(0)
+  imageUrl       String?
+  status         Boolean        @default(true)
+  categoryId     Int
+  category       Category       @relation(fields: [categoryId], references: [id])
+  orderItems     OrderItem[]
+  stockHistories StockHistory[]
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+}
+
+model StockHistory {
+  id        Int       @id @default(autoincrement())
+  menuId    Int
+  userId    Int
+  type      StockType
+  quantity  Int
+  notes     String?   @db.Text
+  menu      Menu      @relation(fields: [menuId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now())
 }
 
 model Order {
-  id          Int         @id @default(autoincrement())
-  studentName String?
-  totalAmount Int         @default(0)
-  status      OrderStatus @default(PENDING)
-  items       OrderItem[]
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  id           Int          @id @default(autoincrement())
+  orderNumber  String       @unique // Contoh: INV-20260710-001
+  studentId    Int?         // Nullable: Jika beli langsung di POS Kasir tanpa akun siswa
+  studentName  String?      // Cadangan tetap ada untuk pembeli non-aplikasi
+  totalAmount  Int          @default(0)
+  status       OrderStatus  @default(PENDING)
+  student      User?        @relation("StudentOrders", fields: [studentId], references: [id], onDelete: SetNull)
+  items        OrderItem[]
+  transaction  Transaction?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
 }
 
 model OrderItem {
-  id        Int      @id @default(autoincrement())
-  orderId   Int
-  menuId    Int
-  quantity  Int
-  price     Int
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  menu      Menu     @relation(fields: [menuId], references: [id])
+  id              Int   @id @default(autoincrement())
+  orderId         Int
+  menuId          Int
+  quantity        Int
+  priceAtPurchase Int   // Menyimpan harga saat dibeli (jika besok harga menu naik, data transaksi lama tidak rusak)
+  order           Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  menu            Menu  @relation(fields: [menuId], references: [id], onDelete: Restrict) // Mencegah menu dihapus jika sudah pernah diorder
+}
+
+model Transaction {
+  id            Int           @id @default(autoincrement())
+  orderId       Int           @unique
+  cashierId     Int
+  paymentMethod PaymentMethod @default(CASH)
+  paymentStatus PaymentStatus @default(UNPAID)
+  amountPaid    Int
+  order         Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  cashier       User          @relation(fields: [cashierId], references: [id])
+  createdAt     DateTime      @default(now())
 }

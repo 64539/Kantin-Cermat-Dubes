@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 interface OrderItem {
   id: number
   quantity: number
-  price: number
+  priceAtPurchase: number
   menu: {
     id: number
     name: string
@@ -24,6 +24,7 @@ interface OrderItem {
 
 interface Order {
   id: number
+  orderNumber: string
   studentName: string | null
   totalAmount: number
   status: "PENDING" | "PROCESSING" | "READY" | "COMPLETED" | "CANCELLED"
@@ -255,7 +256,7 @@ export function Orders() {
               <Table>
                 <TableHeader className="bg-slate-50 border-b border-border">
                   <TableRow>
-                    <TableHead className="font-semibold text-text-primary w-20">ID</TableHead>
+                    <TableHead className="font-semibold text-text-primary">No. Invoice</TableHead>
                     <TableHead className="font-semibold text-text-primary">Nama Pembeli</TableHead>
                     <TableHead className="font-semibold text-text-primary">Detail Menu Dipesan</TableHead>
                     <TableHead className="font-semibold text-text-primary">Total Pembayaran</TableHead>
@@ -267,7 +268,7 @@ export function Orders() {
                 <TableBody>
                   {filteredOrders.map((order) => (
                     <TableRow key={order.id} className="hover:bg-slate-50/55 transition-colors border-b border-border">
-                      <TableCell className="font-bold text-text-secondary">#{order.id}</TableCell>
+                      <TableCell className="font-mono text-xs font-bold text-text-secondary">{order.orderNumber}</TableCell>
                       <TableCell className="font-semibold text-text-primary">
                         {order.studentName || "Pelanggan Umum"}
                       </TableCell>
@@ -315,7 +316,7 @@ export function Orders() {
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-text-primary flex items-center gap-2">
               <ClipboardList className="h-5 w-5 text-primary" />
-              Detail Transaksi #{selectedOrder?.id}
+              Detail Transaksi {selectedOrder?.orderNumber}
             </DialogTitle>
             <DialogDescription>
               Diperbarui pada: {selectedOrder && formatDate(selectedOrder.updatedAt)}
@@ -349,8 +350,8 @@ export function Orders() {
                       <span className="text-xs text-text-secondary">{item.menu?.category?.name}</span>
                     </div>
                     <div className="flex gap-4 items-center">
-                      <span className="text-xs text-text-secondary">{item.quantity} porsi x {formatPrice(item.price)}</span>
-                      <span className="font-bold text-text-primary">{formatPrice(item.quantity * item.price)}</span>
+                      <span className="text-xs text-text-secondary">{item.quantity} porsi x {formatPrice(item.priceAtPurchase)}</span>
+                      <span className="font-bold text-text-primary">{formatPrice(item.quantity * item.priceAtPurchase)}</span>
                     </div>
                   </div>
                 ))}

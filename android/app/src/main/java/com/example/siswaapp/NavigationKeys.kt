@@ -1,0 +1,10 @@
+package com.example.siswaapp
+
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
+
+@Serializable data object Splash : NavKey
+@Serializable data object Login : NavKey
+@Serializable data object MainContainer : NavKey
+@Serializable data object Cart : NavKey
+@Serializable data class MenuDetail(val menuId: Int) : NavKey

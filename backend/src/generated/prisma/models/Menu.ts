@@ -262,6 +262,7 @@ export type MenuWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Menu"> | Date | string
   category?: Prisma.XOR<Prisma.CategoryScalarRelationFilter, Prisma.CategoryWhereInput>
   orderItems?: Prisma.OrderItemListRelationFilter
+  stockHistories?: Prisma.StockHistoryListRelationFilter
 }
 
 export type MenuOrderByWithRelationInput = {
@@ -276,6 +277,7 @@ export type MenuOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   category?: Prisma.CategoryOrderByWithRelationInput
   orderItems?: Prisma.OrderItemOrderByRelationAggregateInput
+  stockHistories?: Prisma.StockHistoryOrderByRelationAggregateInput
   _relevance?: Prisma.MenuOrderByRelevanceInput
 }
 
@@ -294,6 +296,7 @@ export type MenuWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Menu"> | Date | string
   category?: Prisma.XOR<Prisma.CategoryScalarRelationFilter, Prisma.CategoryWhereInput>
   orderItems?: Prisma.OrderItemListRelationFilter
+  stockHistories?: Prisma.StockHistoryListRelationFilter
 }, "id">
 
 export type MenuOrderByWithAggregationInput = {
@@ -338,6 +341,7 @@ export type MenuCreateInput = {
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutMenusInput
   orderItems?: Prisma.OrderItemCreateNestedManyWithoutMenuInput
+  stockHistories?: Prisma.StockHistoryCreateNestedManyWithoutMenuInput
 }
 
 export type MenuUncheckedCreateInput = {
@@ -351,6 +355,7 @@ export type MenuUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutMenuInput
+  stockHistories?: Prisma.StockHistoryUncheckedCreateNestedManyWithoutMenuInput
 }
 
 export type MenuUpdateInput = {
@@ -363,6 +368,7 @@ export type MenuUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutMenusNestedInput
   orderItems?: Prisma.OrderItemUpdateManyWithoutMenuNestedInput
+  stockHistories?: Prisma.StockHistoryUpdateManyWithoutMenuNestedInput
 }
 
 export type MenuUncheckedUpdateInput = {
@@ -376,6 +382,7 @@ export type MenuUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutMenuNestedInput
+  stockHistories?: Prisma.StockHistoryUncheckedUpdateManyWithoutMenuNestedInput
 }
 
 export type MenuCreateManyInput = {
@@ -529,8 +536,18 @@ export type NullableStringFieldUpdateOperationsInput = {
   set?: string | null
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
+export type MenuCreateNestedOneWithoutStockHistoriesInput = {
+  create?: Prisma.XOR<Prisma.MenuCreateWithoutStockHistoriesInput, Prisma.MenuUncheckedCreateWithoutStockHistoriesInput>
+  connectOrCreate?: Prisma.MenuCreateOrConnectWithoutStockHistoriesInput
+  connect?: Prisma.MenuWhereUniqueInput
+}
+
+export type MenuUpdateOneRequiredWithoutStockHistoriesNestedInput = {
+  create?: Prisma.XOR<Prisma.MenuCreateWithoutStockHistoriesInput, Prisma.MenuUncheckedCreateWithoutStockHistoriesInput>
+  connectOrCreate?: Prisma.MenuCreateOrConnectWithoutStockHistoriesInput
+  upsert?: Prisma.MenuUpsertWithoutStockHistoriesInput
+  connect?: Prisma.MenuWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MenuUpdateToOneWithWhereWithoutStockHistoriesInput, Prisma.MenuUpdateWithoutStockHistoriesInput>, Prisma.MenuUncheckedUpdateWithoutStockHistoriesInput>
 }
 
 export type MenuCreateNestedOneWithoutOrderItemsInput = {
@@ -556,6 +573,7 @@ export type MenuCreateWithoutCategoryInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   orderItems?: Prisma.OrderItemCreateNestedManyWithoutMenuInput
+  stockHistories?: Prisma.StockHistoryCreateNestedManyWithoutMenuInput
 }
 
 export type MenuUncheckedCreateWithoutCategoryInput = {
@@ -568,6 +586,7 @@ export type MenuUncheckedCreateWithoutCategoryInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutMenuInput
+  stockHistories?: Prisma.StockHistoryUncheckedCreateNestedManyWithoutMenuInput
 }
 
 export type MenuCreateOrConnectWithoutCategoryInput = {
@@ -611,6 +630,72 @@ export type MenuScalarWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Menu"> | Date | string
 }
 
+export type MenuCreateWithoutStockHistoriesInput = {
+  name: string
+  price: number
+  stock?: number
+  imageUrl?: string | null
+  status?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  category: Prisma.CategoryCreateNestedOneWithoutMenusInput
+  orderItems?: Prisma.OrderItemCreateNestedManyWithoutMenuInput
+}
+
+export type MenuUncheckedCreateWithoutStockHistoriesInput = {
+  id?: number
+  name: string
+  price: number
+  stock?: number
+  imageUrl?: string | null
+  status?: boolean
+  categoryId: number
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  orderItems?: Prisma.OrderItemUncheckedCreateNestedManyWithoutMenuInput
+}
+
+export type MenuCreateOrConnectWithoutStockHistoriesInput = {
+  where: Prisma.MenuWhereUniqueInput
+  create: Prisma.XOR<Prisma.MenuCreateWithoutStockHistoriesInput, Prisma.MenuUncheckedCreateWithoutStockHistoriesInput>
+}
+
+export type MenuUpsertWithoutStockHistoriesInput = {
+  update: Prisma.XOR<Prisma.MenuUpdateWithoutStockHistoriesInput, Prisma.MenuUncheckedUpdateWithoutStockHistoriesInput>
+  create: Prisma.XOR<Prisma.MenuCreateWithoutStockHistoriesInput, Prisma.MenuUncheckedCreateWithoutStockHistoriesInput>
+  where?: Prisma.MenuWhereInput
+}
+
+export type MenuUpdateToOneWithWhereWithoutStockHistoriesInput = {
+  where?: Prisma.MenuWhereInput
+  data: Prisma.XOR<Prisma.MenuUpdateWithoutStockHistoriesInput, Prisma.MenuUncheckedUpdateWithoutStockHistoriesInput>
+}
+
+export type MenuUpdateWithoutStockHistoriesInput = {
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  category?: Prisma.CategoryUpdateOneRequiredWithoutMenusNestedInput
+  orderItems?: Prisma.OrderItemUpdateManyWithoutMenuNestedInput
+}
+
+export type MenuUncheckedUpdateWithoutStockHistoriesInput = {
+  id?: Prisma.IntFieldUpdateOperationsInput | number
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.IntFieldUpdateOperationsInput | number
+  stock?: Prisma.IntFieldUpdateOperationsInput | number
+  imageUrl?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  categoryId?: Prisma.IntFieldUpdateOperationsInput | number
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutMenuNestedInput
+}
+
 export type MenuCreateWithoutOrderItemsInput = {
   name: string
   price: number
@@ -620,6 +705,7 @@ export type MenuCreateWithoutOrderItemsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   category: Prisma.CategoryCreateNestedOneWithoutMenusInput
+  stockHistories?: Prisma.StockHistoryCreateNestedManyWithoutMenuInput
 }
 
 export type MenuUncheckedCreateWithoutOrderItemsInput = {
@@ -632,6 +718,7 @@ export type MenuUncheckedCreateWithoutOrderItemsInput = {
   categoryId: number
   createdAt?: Date | string
   updatedAt?: Date | string
+  stockHistories?: Prisma.StockHistoryUncheckedCreateNestedManyWithoutMenuInput
 }
 
 export type MenuCreateOrConnectWithoutOrderItemsInput = {
@@ -659,6 +746,7 @@ export type MenuUpdateWithoutOrderItemsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   category?: Prisma.CategoryUpdateOneRequiredWithoutMenusNestedInput
+  stockHistories?: Prisma.StockHistoryUpdateManyWithoutMenuNestedInput
 }
 
 export type MenuUncheckedUpdateWithoutOrderItemsInput = {
@@ -671,6 +759,7 @@ export type MenuUncheckedUpdateWithoutOrderItemsInput = {
   categoryId?: Prisma.IntFieldUpdateOperationsInput | number
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  stockHistories?: Prisma.StockHistoryUncheckedUpdateManyWithoutMenuNestedInput
 }
 
 export type MenuCreateManyCategoryInput = {
@@ -693,6 +782,7 @@ export type MenuUpdateWithoutCategoryInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orderItems?: Prisma.OrderItemUpdateManyWithoutMenuNestedInput
+  stockHistories?: Prisma.StockHistoryUpdateManyWithoutMenuNestedInput
 }
 
 export type MenuUncheckedUpdateWithoutCategoryInput = {
@@ -705,6 +795,7 @@ export type MenuUncheckedUpdateWithoutCategoryInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   orderItems?: Prisma.OrderItemUncheckedUpdateManyWithoutMenuNestedInput
+  stockHistories?: Prisma.StockHistoryUncheckedUpdateManyWithoutMenuNestedInput
 }
 
 export type MenuUncheckedUpdateManyWithoutCategoryInput = {
@@ -725,10 +816,12 @@ export type MenuUncheckedUpdateManyWithoutCategoryInput = {
 
 export type MenuCountOutputType = {
   orderItems: number
+  stockHistories: number
 }
 
 export type MenuCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   orderItems?: boolean | MenuCountOutputTypeCountOrderItemsArgs
+  stockHistories?: boolean | MenuCountOutputTypeCountStockHistoriesArgs
 }
 
 /**
@@ -748,6 +841,13 @@ export type MenuCountOutputTypeCountOrderItemsArgs<ExtArgs extends runtime.Types
   where?: Prisma.OrderItemWhereInput
 }
 
+/**
+ * MenuCountOutputType without action
+ */
+export type MenuCountOutputTypeCountStockHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.StockHistoryWhereInput
+}
+
 
 export type MenuSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -761,6 +861,7 @@ export type MenuSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
   orderItems?: boolean | Prisma.Menu$orderItemsArgs<ExtArgs>
+  stockHistories?: boolean | Prisma.Menu$stockHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.MenuCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["menu"]>
 
@@ -782,6 +883,7 @@ export type MenuOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type MenuInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   category?: boolean | Prisma.CategoryDefaultArgs<ExtArgs>
   orderItems?: boolean | Prisma.Menu$orderItemsArgs<ExtArgs>
+  stockHistories?: boolean | Prisma.Menu$stockHistoriesArgs<ExtArgs>
   _count?: boolean | Prisma.MenuCountOutputTypeDefaultArgs<ExtArgs>
 }
 
@@ -790,6 +892,7 @@ export type $MenuPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     category: Prisma.$CategoryPayload<ExtArgs>
     orderItems: Prisma.$OrderItemPayload<ExtArgs>[]
+    stockHistories: Prisma.$StockHistoryPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: number
@@ -1143,6 +1246,7 @@ export interface Prisma__MenuClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   category<T extends Prisma.CategoryDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CategoryDefaultArgs<ExtArgs>>): Prisma.Prisma__CategoryClient<runtime.Types.Result.GetResult<Prisma.$CategoryPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   orderItems<T extends Prisma.Menu$orderItemsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Menu$orderItemsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$OrderItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  stockHistories<T extends Prisma.Menu$stockHistoriesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Menu$stockHistoriesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$StockHistoryPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1550,6 +1654,30 @@ export type Menu$orderItemsArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   distinct?: Prisma.OrderItemScalarFieldEnum | Prisma.OrderItemScalarFieldEnum[]
+}
+
+/**
+ * Menu.stockHistories
+ */
+export type Menu$stockHistoriesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the StockHistory
+   */
+  select?: Prisma.StockHistorySelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the StockHistory
+   */
+  omit?: Prisma.StockHistoryOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.StockHistoryInclude<ExtArgs> | null
+  where?: Prisma.StockHistoryWhereInput
+  orderBy?: Prisma.StockHistoryOrderByWithRelationInput | Prisma.StockHistoryOrderByWithRelationInput[]
+  cursor?: Prisma.StockHistoryWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.StockHistoryScalarFieldEnum | Prisma.StockHistoryScalarFieldEnum[]
 }
 
 /**

@@ -1,4 +1,12 @@
-import { Controller, Post, Get, Body, HttpCode, HttpStatus, Request } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  HttpCode,
+  HttpStatus,
+  Request,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { CreateAuthDto } from './dto/create-auth.dto';
@@ -17,9 +25,19 @@ export class AuthController {
     return this.authService.login(dto);
   }
 
+  @Public()
+  @Post('register')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Register user baru' })
+  register(@Body() dto: CreateAuthDto & { name: string }) {
+    return this.authService.register(dto);
+  }
+
   @Get('me')
   @ApiBearerAuth('access-token')
-  @ApiOperation({ summary: 'Lihat info user yang sedang login (verifikasi token & role)' })
+  @ApiOperation({
+    summary: 'Lihat info user yang sedang login (verifikasi token & role)',
+  })
   getMe(@Request() req: { user: { id: number; email: string; role: string } }) {
     return {
       message: 'Token valid',

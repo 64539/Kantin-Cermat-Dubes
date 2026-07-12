@@ -44,6 +44,15 @@ export class CreateOrderDto {
   studentName?: string;
 
   @ApiProperty({
+    example: 3,
+    description: 'ID user siswa (opsional jika pembeli non-siswa)',
+    required: false,
+  })
+  @IsInt({ message: 'studentId harus berupa bilangan bulat' })
+  @IsOptional()
+  studentId?: number;
+
+  @ApiProperty({
     example: 'Tidak pakai pedas',
     description: 'Catatan tambahan untuk pesanan (opsional)',
     required: false,

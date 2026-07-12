@@ -12,6 +12,18 @@ export class OrdersService {
   constructor(private readonly db: PrismaService) {}
 
   async create(dto: CreateOrderDto) {
+    // Validasi studentId jika disertakan
+    if (dto.studentId) {
+      const studentUser = await this.db.user.findUnique({
+        where: { id: dto.studentId },
+      });
+      if (!studentUser) {
+        throw new BadRequestException(
+          `Siswa dengan ID ${dto.studentId} tidak ditemukan`,
+        );
+      }
+    }
+
     // Cek items tidak kosong
     if (!dto.items || dto.items.length === 0) {
       throw new BadRequestException('Order harus memiliki minimal 1 item');
@@ -47,16 +59,24 @@ export class OrdersService {
         return {
           menuId: item.menu_id,
           quantity: item.quantity,
-          price: menu.price,
+          priceAtPurchase: menu.price,
         };
       }),
     );
 
+    // Generate unique order number (e.g. INV-20260710-1234)
+    const now = new Date();
+    const datePart = now.toISOString().slice(0, 10).replace(/-/g, '');
+    const randomPart = Math.floor(1000 + Math.random() * 9000);
+    const orderNumber = `INV-${datePart}-${randomPart}`;
+
     // Buat order
     const order = await this.db.order.create({
       data: {
+        orderNumber,
         totalAmount,
         studentName: dto.studentName ?? null,
+        studentId: dto.studentId ?? null,
         items: { create: items },
       },
       include: {
@@ -95,8 +115,14 @@ export class OrdersService {
     return order;
   }
 
-  async findAll() {
+  async findAll(user?: { id: number; role: string }) {
+    const whereClause: any = {};
+    if (user && user.role === 'STUDENT') {
+      whereClause.studentId = user.id;
+    }
+
     return this.db.order.findMany({
+      where: whereClause,
       include: {
         items: {
           include: { menu: { include: { category: true } } },

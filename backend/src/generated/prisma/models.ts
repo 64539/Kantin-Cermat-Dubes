@@ -11,6 +11,8 @@
 export type * from './models/User.js'
 export type * from './models/Category.js'
 export type * from './models/Menu.js'
+export type * from './models/StockHistory.js'
 export type * from './models/Order.js'
 export type * from './models/OrderItem.js'
+export type * from './models/Transaction.js'
 export type * from './commonInputTypes.js'

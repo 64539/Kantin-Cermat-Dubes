@@ -41,8 +41,23 @@ export class MenuService {
     });
   }
 
-  async findAll() {
+  async findAll(search?: string, categoryId?: string, status?: string) {
+    const where: any = {};
+    if (search) {
+      where.name = { contains: search };
+    }
+    if (categoryId) {
+      const parsedCatId = parseInt(categoryId, 10);
+      if (!isNaN(parsedCatId)) {
+        where.categoryId = parsedCatId;
+      }
+    }
+    if (status !== undefined) {
+      where.status = status === 'true';
+    }
+
     return this.db.menu.findMany({
+      where,
       include: { category: true },
       orderBy: { createdAt: 'desc' },
     });

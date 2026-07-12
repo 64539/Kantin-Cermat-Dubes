@@ -54,8 +54,10 @@ export const ModelName = {
   User: 'User',
   Category: 'Category',
   Menu: 'Menu',
+  StockHistory: 'StockHistory',
   Order: 'Order',
-  OrderItem: 'OrderItem'
+  OrderItem: 'OrderItem',
+  Transaction: 'Transaction'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -80,6 +82,8 @@ export const UserScalarFieldEnum = {
   password: 'password',
   name: 'name',
   role: 'role',
+  isActive: 'isActive',
+  lastLogin: 'lastLogin',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -112,8 +116,23 @@ export const MenuScalarFieldEnum = {
 export type MenuScalarFieldEnum = (typeof MenuScalarFieldEnum)[keyof typeof MenuScalarFieldEnum]
 
 
+export const StockHistoryScalarFieldEnum = {
+  id: 'id',
+  menuId: 'menuId',
+  userId: 'userId',
+  type: 'type',
+  quantity: 'quantity',
+  notes: 'notes',
+  createdAt: 'createdAt'
+} as const
+
+export type StockHistoryScalarFieldEnum = (typeof StockHistoryScalarFieldEnum)[keyof typeof StockHistoryScalarFieldEnum]
+
+
 export const OrderScalarFieldEnum = {
   id: 'id',
+  orderNumber: 'orderNumber',
+  studentId: 'studentId',
   studentName: 'studentName',
   totalAmount: 'totalAmount',
   status: 'status',
@@ -129,10 +148,23 @@ export const OrderItemScalarFieldEnum = {
   orderId: 'orderId',
   menuId: 'menuId',
   quantity: 'quantity',
-  price: 'price'
+  priceAtPurchase: 'priceAtPurchase'
 } as const
 
 export type OrderItemScalarFieldEnum = (typeof OrderItemScalarFieldEnum)[keyof typeof OrderItemScalarFieldEnum]
+
+
+export const TransactionScalarFieldEnum = {
+  id: 'id',
+  orderId: 'orderId',
+  cashierId: 'cashierId',
+  paymentMethod: 'paymentMethod',
+  paymentStatus: 'paymentStatus',
+  amountPaid: 'amountPaid',
+  createdAt: 'createdAt'
+} as const
+
+export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -141,6 +173,14 @@ export const SortOrder = {
 } as const
 
 export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 
 
 export const UserOrderByRelevanceFieldEnum = {
@@ -159,14 +199,6 @@ export const CategoryOrderByRelevanceFieldEnum = {
 export type CategoryOrderByRelevanceFieldEnum = (typeof CategoryOrderByRelevanceFieldEnum)[keyof typeof CategoryOrderByRelevanceFieldEnum]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const MenuOrderByRelevanceFieldEnum = {
   name: 'name',
   imageUrl: 'imageUrl'
@@ -175,7 +207,15 @@ export const MenuOrderByRelevanceFieldEnum = {
 export type MenuOrderByRelevanceFieldEnum = (typeof MenuOrderByRelevanceFieldEnum)[keyof typeof MenuOrderByRelevanceFieldEnum]
 
 
+export const StockHistoryOrderByRelevanceFieldEnum = {
+  notes: 'notes'
+} as const
+
+export type StockHistoryOrderByRelevanceFieldEnum = (typeof StockHistoryOrderByRelevanceFieldEnum)[keyof typeof StockHistoryOrderByRelevanceFieldEnum]
+
+
 export const OrderOrderByRelevanceFieldEnum = {
+  orderNumber: 'orderNumber',
   studentName: 'studentName'
 } as const
 

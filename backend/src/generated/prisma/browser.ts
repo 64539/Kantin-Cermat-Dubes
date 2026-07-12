@@ -33,6 +33,11 @@ export type Category = Prisma.CategoryModel
  */
 export type Menu = Prisma.MenuModel
 /**
+ * Model StockHistory
+ * 
+ */
+export type StockHistory = Prisma.StockHistoryModel
+/**
  * Model Order
  * 
  */
@@ -42,3 +47,8 @@ export type Order = Prisma.OrderModel
  * 
  */
 export type OrderItem = Prisma.OrderItemModel
+/**
+ * Model Transaction
+ * 
+ */
+export type Transaction = Prisma.TransactionModel
