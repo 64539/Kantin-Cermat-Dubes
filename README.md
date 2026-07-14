@@ -77,15 +77,6 @@ npm run dev
 4. Sesuaikan endpoint API (Base URL) di dalam kode Kotlin (biasanya di file konfigurasi Retrofit/Networking) agar mengarah ke server backend Anda.
 5. Klik tombol **Run (Shift + F10)** untuk menjalankan aplikasi di Emulator atau HP fisik yang terhubung.
 
-## 🤝 Kontribusi
-
-Proyek ini terbuka untuk kontribusi, khususnya dari siswa jurusan Rekayasa Perangkat Lunak (RPL) SMKN 12 Jakarta. Jika Anda ingin berkontribusi:
-1. Fork repositori ini
-2. Buat branch fitur baru (`git checkout -b fitur/NamaFitur`)
-3. Commit perubahan Anda (`git commit -m 'Menambahkan fitur XYZ'`)
-4. Push ke branch (`git push origin fitur/NamaFitur`)
-5. Buat Pull Request
-
 ## 📄 Lisensi
 
 Proyek ini dibuat untuk keperluan internal SMKN 12 Jakarta dan menggunakan lisensi [MIT](LICENSE).
