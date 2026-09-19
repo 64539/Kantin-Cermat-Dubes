@@ -6,10 +6,8 @@ services:
     container_name: kantin_db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: kantin-cermat-dubes-12
       MYSQL_DATABASE: kantin_db
-      MYSQL_USER: kantin_user
-      MYSQL_PASSWORD: kantin_password
     ports:
       - "3306:3306"
     volumes:
@@ -24,7 +22,11 @@ services:
     ports:
       - "3005:3000"
     environment:
-      - DATABASE_URL=mysql://root:kantin-cermat-dubes-12@db:3306/kantin_db
+      - DATABASE_HOST=db
+      - DATABASE_PORT=3306
+      - DATABASE_USER=root
+      - DATABASE_PASSWORD=kantin-cermat-dubes-12
+      - DATABASE_NAME=kantin_db
       - JWT_SECRET=rahasia-negara-dubescermat-2026
     volumes:
       - api_uploads:/app/uploads
