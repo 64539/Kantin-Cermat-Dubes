@@ -4,7 +4,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-# Ensure environment variables are handled (fallback API URL if needed)
+# Inject the API URL argument into the environment for Vite
+ARG VITE_API_URL
+ENV VITE_API_URL=$VITE_API_URL
+
 RUN npm run build
 
 # Stage 2: Serve with Nginx

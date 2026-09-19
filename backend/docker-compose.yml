@@ -34,7 +34,10 @@ services:
     command: node dist/main.js
 
   web_admin:
-    build: ../frontend
+    build: 
+      context: ../frontend
+      args:
+        - VITE_API_URL=https://kantin-api.smkn12jakarta.sch.id
     container_name: kantin_web_admin
     restart: always
     ports:
