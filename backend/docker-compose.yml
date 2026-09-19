@@ -28,7 +28,7 @@ services:
       - JWT_SECRET=rahasia-negara-dubescermat-2026
     volumes:
       - api_uploads:/app/uploads
-    command: node dist/src/main.js
+    command: node dist/main.js
 
   web_admin:
     build: ../frontend
