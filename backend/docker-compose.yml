@@ -24,16 +24,11 @@ services:
     ports:
       - "3005:3000"
     environment:
-      # Use the internal docker network to connect to the db service
-      DATABASE_URL: "mysql://kantin_user:kantin_password@db:3306/kantin_db"
-      JWT_SECRET: "your_super_secret_jwt_key_here"
-      JWT_REFRESH_SECRET: "your_super_secret_jwt_refresh_key_here"
-      CORS_ALLOWED_ORIGINS: "http://localhost:5173"
-      PORT: 3000
-      APP_URL: "http://localhost:3000"
+      - DATABASE_URL=mysql://root:kantin-cermat-dubes-12@db:3306/kantin_db
+      - JWT_SECRET=rahasia-negara-dubescermat-2026
     volumes:
-      # Persist the uploads directory outside the container
       - api_uploads:/app/uploads
+    command: node dist/src/main.js
 
   web_admin:
     build: ../frontend
