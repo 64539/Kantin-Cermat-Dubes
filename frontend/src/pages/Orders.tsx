@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { ClipboardList, CheckCircle, DollarSign, Search, Loader2, Eye, RefreshCw, ChevronRight } from "lucide-react"
+import { ClipboardList, CheckCircle, DollarSign, Search, Loader2, Eye, RefreshCw } from "lucide-react"
 import { api } from "@/lib/api"
 import { useToast } from "@/hooks/use-toast"
 
