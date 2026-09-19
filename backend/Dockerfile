@@ -23,18 +23,17 @@ FROM node:20-alpine AS production
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
+# Copy package.json, package-lock.json, and Prisma schema
 COPY package*.json ./
+COPY prisma ./prisma
 
 # Install only production dependencies
 RUN npm install --omit=dev
 
-# Copy the Prisma schema and generated client
-COPY --from=builder /app/prisma ./prisma
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+# Generate Prisma client for production (ensures binary compatibility in the final image)
+RUN npx prisma generate
 
-# Copy the compiled application code
+# Copy the compiled application code from the builder stage
 COPY --from=builder /app/dist ./dist
 
 # Create a directory for uploads and ensure proper permissions
