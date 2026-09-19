@@ -28,6 +28,7 @@ services:
       - DATABASE_PASSWORD=kantin-cermat-dubes-12
       - DATABASE_NAME=kantin_db
       - JWT_SECRET=rahasia-negara-dubescermat-2026
+      - JWT_REFRESH_SECRET=rahasia-refresh-dubescermat-2026
     volumes:
       - api_uploads:/app/uploads
     command: node dist/main.js
