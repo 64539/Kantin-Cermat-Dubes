@@ -11,7 +11,7 @@ import { UpdateMenuDto } from './dto/update-menu.dto';
 export class MenuService {
   constructor(private readonly db: PrismaService) {}
 
-  /** Cek kategori ada — lempar 400 yang jelas daripada 500 FK violation */
+  /** Cek kategori ada – lempar 400 yang jelas daripada 500 FK violation */
   private async ensureCategoryExists(categoryId: number) {
     const category = await this.db.category.findUnique({
       where: { id: categoryId },
@@ -26,13 +26,13 @@ export class MenuService {
 
   async create(dto: CreateMenuDto) {
     // Validasi foreign key sebelum insert agar error 400 bukan 500
-    await this.ensureCategoryExists(dto.category_id);
+    await this.ensureCategoryExists(dto.categoryId);
 
     return this.db.menu.create({
       data: {
         name: dto.name,
         price: dto.price,
-        categoryId: dto.category_id,
+        categoryId: dto.categoryId,
         imageUrl: dto.imageUrl ?? null,
         stock: dto.stock ?? 0,
         status: dto.status ?? true,
@@ -77,9 +77,9 @@ export class MenuService {
   async update(id: number, dto: UpdateMenuDto) {
     await this.findOne(id);
 
-    // Jika category_id dikirim, pastikan kategori baru itu ada
-    if (dto.category_id !== undefined) {
-      await this.ensureCategoryExists(dto.category_id);
+    // Jika categoryId dikirim, pastikan kategori baru itu ada
+    if (dto.categoryId !== undefined) {
+      await this.ensureCategoryExists(dto.categoryId);
     }
 
     const data: Partial<{
@@ -92,7 +92,7 @@ export class MenuService {
 
     if (dto.name !== undefined) data.name = dto.name;
     if (dto.price !== undefined) data.price = dto.price;
-    if (dto.category_id !== undefined) data.categoryId = dto.category_id;
+    if (dto.categoryId !== undefined) data.categoryId = dto.categoryId;
     if (dto.imageUrl !== undefined) data.imageUrl = dto.imageUrl;
     if (dto.status !== undefined) data.status = dto.status;
 

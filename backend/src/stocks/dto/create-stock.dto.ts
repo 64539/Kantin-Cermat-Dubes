@@ -6,9 +6,9 @@ export class CreateStockDto {
     example: 1,
     description: 'ID menu yang akan diatur stoknya',
   })
-  @IsInt({ message: 'menu_id harus berupa bilangan bulat' })
-  @Min(1, { message: 'menu_id tidak valid' })
-  menu_id: number;
+  @IsInt({ message: 'menuId harus berupa bilangan bulat' })
+  @Min(1, { message: 'menuId tidak valid' })
+  menuId: number;
 
   @ApiProperty({
     example: 50,

@@ -12,9 +12,9 @@ import { Type } from 'class-transformer';
 
 export class CreateOrderItemDto {
   @ApiProperty({ example: 1, description: 'ID menu yang dipesan' })
-  @IsInt({ message: 'menu_id harus berupa bilangan bulat' })
-  @Min(1, { message: 'menu_id tidak valid' })
-  menu_id: number;
+  @IsInt({ message: 'menuId harus berupa bilangan bulat' })
+  @Min(1, { message: 'menuId tidak valid' })
+  menuId: number;
 
   @ApiProperty({ example: 2, description: 'Jumlah item yang dipesan' })
   @IsInt({ message: 'quantity harus berupa bilangan bulat' })
@@ -26,7 +26,7 @@ export class CreateOrderDto {
   @ApiProperty({
     type: [CreateOrderItemDto],
     description: 'Daftar item yang dipesan',
-    example: [{ menu_id: 1, quantity: 2 }],
+    example: [{ menuId: 1, quantity: 2 }],
   })
   @IsArray({ message: 'items harus berupa array' })
   @IsNotEmpty({ message: 'items tidak boleh kosong' })

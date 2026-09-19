@@ -9,16 +9,16 @@ export class StocksService {
 
   async create(dto: CreateStockDto) {
     // Pastikan menu ada
-    const menu = await this.db.menu.findUnique({ where: { id: dto.menu_id } });
+    const menu = await this.db.menu.findUnique({ where: { id: dto.menuId } });
     if (!menu) {
       throw new NotFoundException(
-        `Menu dengan id ${dto.menu_id} tidak ditemukan`,
+        `Menu dengan id ${dto.menuId} tidak ditemukan`,
       );
     }
 
     // Set stok menu
     const updated = await this.db.menu.update({
-      where: { id: dto.menu_id },
+      where: { id: dto.menuId },
       data: {
         stock: dto.stock,
         status: dto.stock > 0, // aktif jika stok > 0

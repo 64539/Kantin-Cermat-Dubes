@@ -32,3 +32,15 @@ Thumbs.db
 *.sln
 *.md
 *.txt
+
+# Abaikan folder docs
+docs/
+
+# Abaikan semua file .md di root, KECUALI README.md
+/*.md
+!/README.md
+
+# Abaikan file .env & build artifacts (pastiin ini juga aman)
+.env
+.env.*
+backend/.env

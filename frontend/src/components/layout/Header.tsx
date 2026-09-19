@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useCallback, useRef } from "react"
 import { Menu, Search, Bell, AlertTriangle, AlertCircle, ClipboardList } from "lucide-react"
 import { api } from "@/lib/api"
 
@@ -16,11 +16,26 @@ interface Notification {
   type: "danger" | "warning" | "info"
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// POLLING CONFIG
+// Sebelumnya: setInterval dengan interval tetap 20 detik, berjalan terus
+// bahkan saat tab tidak aktif — membuang kuota network dan server resources.
+//
+// Sekarang:
+// 1. Polling BERHENTI saat tab tidak aktif (visibilitychange API).
+// 2. Polling RESUME segera saat tab kembali aktif.
+// 3. Interval dapat diatur dari satu konstanta terpusat.
+// ─────────────────────────────────────────────────────────────────────────────
+const POLL_INTERVAL_MS = 30_000 // 30 detik
+
 export function Header({ setMobileOpen }: { setMobileOpen: (open: boolean) => void }) {
   const [currentUser, setCurrentUser] = useState<LoggedInUser | null>(null)
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [showNotifications, setShowNotifications] = useState(false)
   const [hasUnread, setHasUnread] = useState(false)
+
+  // Simpan referensi interval agar bisa di-clear dengan benar
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     try {
@@ -31,22 +46,20 @@ export function Header({ setMobileOpen }: { setMobileOpen: (open: boolean) => vo
     } catch (e) {
       console.error("Gagal membaca data user dari localStorage", e)
     }
-
-    // Load notifications on mount and set polling interval
-    fetchNotifications()
-    const interval = setInterval(fetchNotifications, 20000) // check every 20 seconds
-    return () => clearInterval(interval)
   }, [])
 
-  const fetchNotifications = async () => {
+  const fetchNotifications = useCallback(async () => {
+    // Jangan fetch jika tab sedang tidak visible (background tab)
+    if (document.visibilityState !== "visible") return
+
     try {
       const [stocksRes, ordersRes] = await Promise.all([
         api.get("/stocks"),
         api.get("/orders"),
       ])
-      
+
       const newNotifs: Notification[] = []
-      
+
       // 1. Cek stok habis & menipis
       if (Array.isArray(stocksRes.data)) {
         stocksRes.data.forEach((s: any) => {
@@ -67,7 +80,7 @@ export function Header({ setMobileOpen }: { setMobileOpen: (open: boolean) => vo
           }
         })
       }
-      
+
       // 2. Cek pesanan baru (PENDING)
       if (Array.isArray(ordersRes.data)) {
         ordersRes.data.forEach((o: any) => {
@@ -81,22 +94,53 @@ export function Header({ setMobileOpen }: { setMobileOpen: (open: boolean) => vo
           }
         })
       }
-      
+
       setNotifications(newNotifs)
-      if (newNotifs.length > 0) {
-        setHasUnread(true)
-      } else {
-        setHasUnread(false)
-      }
+      setHasUnread(newNotifs.length > 0)
     } catch (e) {
       console.error("Gagal memuat notifikasi otomatis", e)
     }
-  }
+  }, [])
+
+  const startPolling = useCallback(() => {
+    // Fetch segera saat dimulai
+    fetchNotifications()
+    // Kemudian set interval
+    intervalRef.current = setInterval(fetchNotifications, POLL_INTERVAL_MS)
+  }, [fetchNotifications])
+
+  const stopPolling = useCallback(() => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+  }, [])
+
+  useEffect(() => {
+    // Mulai polling saat komponen mount
+    startPolling()
+
+    // Handler visibilitychange: berhenti saat tab tidak aktif, resume saat aktif kembali
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        startPolling()
+      } else {
+        stopPolling()
+      }
+    }
+
+    document.addEventListener("visibilitychange", handleVisibilityChange)
+
+    return () => {
+      stopPolling()
+      document.removeEventListener("visibilitychange", handleVisibilityChange)
+    }
+  }, [startPolling, stopPolling])
 
   const handleToggleNotifications = () => {
     setShowNotifications(!showNotifications)
     if (!showNotifications) {
-      setHasUnread(false) // Mark as read when opened
+      setHasUnread(false)
     }
   }
 
@@ -190,7 +234,7 @@ export function Header({ setMobileOpen }: { setMobileOpen: (open: boolean) => vo
             </div>
           )}
         </div>
-        
+
         <div className="flex items-center gap-3 border-l border-border pl-4">
           <div className="hidden md:flex flex-col items-end">
             <span className="text-sm font-medium text-text-primary">

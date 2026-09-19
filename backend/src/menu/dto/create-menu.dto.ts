@@ -29,7 +29,7 @@ export class CreateMenuDto {
   })
   @IsInt({ message: 'ID kategori harus berupa bilangan bulat' })
   @Min(1, { message: 'ID kategori tidak valid' })
-  category_id: number;
+  categoryId: number;
 
   @ApiProperty({
     example: 'https://example.com/gambar.jpg',

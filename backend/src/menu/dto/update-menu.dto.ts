@@ -36,7 +36,7 @@ export class UpdateMenuDto {
   @IsInt({ message: 'ID kategori harus berupa bilangan bulat' })
   @Min(1, { message: 'ID kategori tidak valid' })
   @IsOptional()
-  category_id?: number;
+  categoryId?: number;
 
   @ApiProperty({
     example: 'https://example.com/gambar-baru.jpg',

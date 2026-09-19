@@ -9,8 +9,28 @@ import * as fs from 'fs';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS
-  app.enableCors();
+  // ─────────────────────────────────────────────────────────────────────────
+  // CORS: Strict whitelist — hanya origins yang terdaftar di env yang diizinkan.
+  // Sebelumnya app.enableCors() (tanpa argumen) membolehkan SEMUA origin (*),
+  // yang merupakan celah keamanan serius pada lingkungan produksi.
+  // ─────────────────────────────────────────────────────────────────────────
+  const allowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || 'http://localhost:5173')
+    .split(',')
+    .map((o) => o.trim());
+
+  app.enableCors({
+    origin: (origin, callback) => {
+      // Izinkan request tanpa origin (Postman, mobile app, server-to-server)
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origin "${origin}" tidak diizinkan oleh CORS policy`));
+      }
+    },
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
 
   // Pastikan direktori uploads ada
   const uploadsDir = join(process.cwd(), 'uploads');
@@ -42,7 +62,7 @@ async function bootstrap() {
         bearerFormat: 'JWT',
         description: 'Masukkan token JWT dari endpoint POST /auth/login',
       },
-      'access-token', // <-- nama identifier
+      'access-token',
     )
     .build();
 

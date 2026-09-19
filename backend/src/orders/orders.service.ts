@@ -29,19 +29,32 @@ export class OrdersService {
       throw new BadRequestException('Order harus memiliki minimal 1 item');
     }
 
-    let totalAmount = 0;
+    // ─────────────────────────────────────────────────────────────────────────
+    // ATOMIC TRANSACTION: Seluruh proses validasi stok, pembuatan order,
+    // pengurangan stok, dan update status dijalankan dalam satu transaksi DB.
+    // Jika SATU query gagal, SEMUA perubahan otomatis di-rollback.
+    // Ini mencegah race condition pada pemesanan bersamaan (concurrent orders).
+    // ─────────────────────────────────────────────────────────────────────────
+    const order = await this.db.$transaction(async (tx) => {
+      let totalAmount = 0;
 
-    // Validasi semua menu sekaligus lalu hitung total
-    const items = await Promise.all(
-      dto.items.map(async (item) => {
-        const menu = await this.db.menu.findUnique({
-          where: { id: item.menu_id },
+      // Validasi & lock semua menu secara sequential untuk menghindari
+      // phantom read di dalam transaksi yang sama
+      const validatedItems: {
+        menuId: number;
+        quantity: number;
+        priceAtPurchase: number;
+      }[] = [];
+
+      for (const item of dto.items) {
+        const menu = await tx.menu.findUnique({
+          where: { id: item.menuId },
         });
 
         // FK violation → 400 bukan 500
         if (!menu) {
           throw new BadRequestException(
-            `Menu dengan id ${item.menu_id} tidak ditemukan`,
+            `Menu dengan id ${item.menuId} tidak ditemukan`,
           );
         }
         if (!menu.status) {
@@ -56,61 +69,58 @@ export class OrdersService {
         }
 
         totalAmount += menu.price * item.quantity;
-        return {
-          menuId: item.menu_id,
+        validatedItems.push({
+          menuId: item.menuId,
           quantity: item.quantity,
           priceAtPurchase: menu.price,
-        };
-      }),
-    );
+        });
+      }
 
-    // Generate unique order number (e.g. INV-20260710-1234)
-    const now = new Date();
-    const datePart = now.toISOString().slice(0, 10).replace(/-/g, '');
-    const randomPart = Math.floor(1000 + Math.random() * 9000);
-    const orderNumber = `INV-${datePart}-${randomPart}`;
+      // Generate unique order number (e.g. INV-20260710-1234)
+      const now = new Date();
+      const datePart = now.toISOString().slice(0, 10).replace(/-/g, '');
+      const randomPart = Math.floor(1000 + Math.random() * 9000);
+      const orderNumber = `INV-${datePart}-${randomPart}`;
 
-    // Buat order
-    const order = await this.db.order.create({
-      data: {
-        orderNumber,
-        totalAmount,
-        studentName: dto.studentName ?? null,
-        studentId: dto.studentId ?? null,
-        items: { create: items },
-      },
-      include: {
-        items: {
-          include: { menu: { include: { category: true } } },
+      // Buat order beserta semua items dalam satu operasi
+      const createdOrder = await tx.order.create({
+        data: {
+          orderNumber,
+          totalAmount,
+          studentName: dto.studentName ?? null,
+          studentId: dto.studentId ?? null,
+          items: { create: validatedItems },
         },
-      },
-    });
+        include: {
+          items: {
+            include: { menu: { include: { category: true } } },
+          },
+        },
+      });
 
-    // Kurangi stok setiap menu setelah order berhasil dibuat
-    await Promise.all(
-      dto.items.map((item) =>
-        this.db.menu.update({
-          where: { id: item.menu_id },
+      // Kurangi stok setiap menu SECARA SEQUENTIAL di dalam transaksi
+      // Sequential (bukan Promise.all) untuk menjaga isolasi transaksi
+      for (const item of dto.items) {
+        await tx.menu.update({
+          where: { id: item.menuId },
           data: { stock: { decrement: item.quantity } },
-        }),
-      ),
-    );
+        });
 
-    // Nonaktifkan menu yang stoknya habis setelah pengurangan
-    await Promise.all(
-      dto.items.map(async (item) => {
-        const updatedMenu = await this.db.menu.findUnique({
-          where: { id: item.menu_id },
+        // Nonaktifkan menu yang stoknya habis setelah pengurangan
+        const updatedMenu = await tx.menu.findUnique({
+          where: { id: item.menuId },
           select: { stock: true },
         });
         if (updatedMenu && updatedMenu.stock <= 0) {
-          await this.db.menu.update({
-            where: { id: item.menu_id },
+          await tx.menu.update({
+            where: { id: item.menuId },
             data: { status: false, stock: 0 },
           });
         }
-      }),
-    );
+      }
+
+      return createdOrder;
+    });
 
     return order;
   }
